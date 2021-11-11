@@ -46,15 +46,48 @@
 
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a> |
-    <a asp-action="Prev" asp-route-id="(@Model.Id)">Prev</a> |
-    @{
-        if ((bool)ViewData["Relleno"])
+    @if ((bool)ViewData["Relleno"])
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span>|</span>
+        <a asp-action="Index"> Back to List</a><span>|</span>
+        if ((bool)ViewData["anterior"] == true)
         {
-        <span>#</span>@Model.Id;<span>|</span> 
+            <a asp-action="Details" asp-route-id="@ViewData["prev"]" asp-route-booleano="true">Prev </a><span>|</span>
+        }
+        else
+        {
+            <p style="display:inline-block;">Prev</p><span>|</span>
+        }
+
+        <a>#@Html.DisplayFor(model => model.Id)</a><span>|</span>
+        if ((bool)ViewData["siguiente"] == true)
+        {
+            <a asp-action="Details" asp-route-id="@ViewData["next"]" asp-route-booleano="true">Next</a>
+        }
+        else
+        {
+            <p style="display:inline-block;">Next</p>
         }
     }
-    
-    <a asp-action="Next" asp-route-id="(@Model.Id)">Next</a>
+    else
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit </a><span>|</span>
+        <a asp-action="Index"> Back to List </a><span>|</span>
+        if ((bool)ViewData["anterior"] == true)
+        {
+            <a asp-action="Details" asp-route-id="@ViewData["prev"]" asp-route-booleano="false">Prev </a><span>|</span>
+        }
+        else
+        {
+            <p style="display:inline-block;">Prev</p><span>|</span>
+        }
+        if ((bool)ViewData["siguiente"] == true)
+        {
+            <a asp-action="Details" asp-route-id="@ViewData["next"]" asp-route-booleano="false">Next</a>
+        }
+        else
+        {
+            <p style="display:inline-block;">Next</p>
+        }
+    }
 </div>

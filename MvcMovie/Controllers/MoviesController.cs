@@ -58,39 +58,36 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            if (id == -1)
+            var prev = (from x in _context.Movie where x.Id < id orderby x.Id descending select x).FirstOrDefault();
+            var next = (from x in _context.Movie where x.Id > id orderby x.Id ascending select x).FirstOrDefault();
+
+            if (prev != null)
             {
-                id = 1;
+                ViewData["prev"] = prev.Id;
+                ViewData["anterior"] = true;
             }
-            var movie = await _context.Movie
-                .FirstOrDefaultAsync(m => m.Id == id);
+            else
+            {
+                ViewData["anterior"] = false;
+            }
+            if (next != null)
+            {
+                ViewData["next"] = next.Id;
+                ViewData["siguiente"] = true;
+            }
+            else
+            {
+                ViewData["siguiente"] = false;
+
+            }
+
+
+            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
                 return NotFound();
             }
-            @ViewData["Relleno"] = booleano;
-            return View(movie);
-        }
-
-        // GET: Movies/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Movies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            ViewData["Relleno"] = booleano;
             return View(movie);
         }
 
